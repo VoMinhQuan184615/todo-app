@@ -1,4 +1,4 @@
-import Task from "../models/Task.js";
+import Task from "./task.model.js";
 
 export const getAllTasks = async (req, res) => {
   const { filter = "today" } = req.query;
@@ -35,7 +35,10 @@ export const getAllTasks = async (req, res) => {
         $facet: {
           tasks: [{ $sort: { createdAt: -1 } }],
           activeCount: [{ $match: { status: "active" } }, { $count: "count" }],
-          completeCount: [{ $match: { status: "complete" } }, { $count: "count" }],
+          completeCount: [
+            { $match: { status: "complete" } },
+            { $count: "count" },
+          ],
         },
       },
     ]);
