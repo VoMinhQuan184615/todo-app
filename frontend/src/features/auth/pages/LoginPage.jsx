@@ -1,14 +1,18 @@
 import { toast } from "../../../../node_modules/sonner/dist/index";
 import { LoginForm } from "../components/login-form";
 import { useLogin } from "../hook/useLogin";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const { login } = useLogin();
-
+  const navigate = useNavigate();
   const handleSubmit = async (data) => {
     try {
       await login(data);
+
       toast.success("Login successful");
+
+      navigate("/dashboard");
     } catch (error) {
       toast.error("Sai tài khoản hoặc mật khẩu");
     }
