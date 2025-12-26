@@ -6,7 +6,9 @@
     },
     "jsx": "react-jsx",
     "module": "esnext",
-    "target": "esnext"
+    "target": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["vite/client"]
   },
   "include": ["src"]
 }

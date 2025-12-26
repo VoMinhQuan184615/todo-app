@@ -17,7 +17,6 @@ import { Input } from "@/features/auth/shared/ui/input";
 export function LoginForm({ className, onSubmit }) {
   const handleLogin = (e) => {
     e.preventDefault();
-
     onSubmit({
       username: e.target.username.value,
       password: e.target.password.value,
@@ -50,6 +49,16 @@ export function LoginForm({ className, onSubmit }) {
               <Field>
                 <FieldLabel htmlFor="password">Password</FieldLabel>
                 <Input id="password" name="password" type="password" required />
+              </Field>
+
+              <Field>
+                <Button type="submit">Login</Button>
+                <Button variant="outline" type="button">
+                  Login with Google
+                </Button>
+                <FieldDescription className="text-center">
+                  Don&apos;t have an account? <a href="/signup">Sign up</a>
+                </FieldDescription>
               </Field>
 
               <Field>

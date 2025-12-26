@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Calendar } from "@/features/todo/shared/ui/calendar";
 import {
   SidebarGroup,
@@ -5,10 +6,17 @@ import {
 } from "@/features/todo/shared/ui/sidebar";
 
 export function DatePicker() {
+  const [date, setDate] = useState(new Date());
+
   return (
     <SidebarGroup className="px-0">
       <SidebarGroupContent>
-        <Calendar className="[&_[role=gridcell].bg-accent]:bg-sidebar-primary [&_[role=gridcell].bg-accent]:text-sidebar-primary-foreground [&_[role=gridcell]]:w-[33px]" />
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="[&_[role=gridcell]]:w-[33px]"
+        />
       </SidebarGroupContent>
     </SidebarGroup>
   );
