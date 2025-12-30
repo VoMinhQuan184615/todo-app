@@ -12,7 +12,8 @@ import {
   SidebarTrigger,
 } from "@/features/todo/shared/ui/sidebar";
 import { useTask } from "@/features/todo/hook/useTask";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { se } from "date-fns/locale";
 
 export default function DashboardPage() {
   const { getTasks, createTask } = useTask();
@@ -20,8 +21,16 @@ export default function DashboardPage() {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const debounceTimerRef = useRef(null);
+
   useEffect(() => {
-    const loadTasks = async () => {
+    // Clear previous timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Set new debounce timer (500ms delay)
+    debounceTimerRef.current = setTimeout(async () => {
       try {
         const response = await getTasks(selectedDate);
         console.log(response);
@@ -30,8 +39,13 @@ export default function DashboardPage() {
         console.error("Error fetching tasks:", error);
         setTasks([]);
       }
+    }, 500);
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
     };
-    loadTasks();
   }, [selectedDate]);
 
   const handleAddTask = async () => {
@@ -43,6 +57,7 @@ export default function DashboardPage() {
       setNewTaskTitle("");
       // Reload tasks
       const response = await getTasks();
+
       setTasks(Array.isArray(response) ? response : response.tasks || []);
     } catch (error) {
       console.error("Error creating task:", error);

@@ -13,10 +13,26 @@ export const useTask = () => {
     try {
       setLoading(true);
       setError(null);
-      const tasks = await fetchTasksApi(selectedDate);
-      return tasks;
-    } catch (error) {
-      setError("Failed to fetch tasks");
+      // Normalize date to avoid timezone issues
+      const normalized =
+        selectedDate instanceof Date
+          ? new Date(
+              selectedDate.getFullYear(),
+              selectedDate.getMonth(),
+              selectedDate.getDate()
+            )
+          : selectedDate;
+      console.log("Normalized date:", normalized);
+      const response = await fetchTasksApi(normalized);
+      console.log("Tasks response:", response);
+      // Extract tasks from response.tasks array
+      return response?.tasks || [];
+    } catch (error: any) {
+      const errorMsg =
+        error?.response?.data?.message || "Failed to fetch tasks";
+      setError(errorMsg);
+      console.error("Error fetching tasks:", error);
+      return [];
     } finally {
       setLoading(false);
     }

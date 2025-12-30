@@ -2,8 +2,12 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const authClient = axios.create({
+  baseURL: API_URL,
+});
+
 export const loginApi = async (username: string, password: string) => {
-  const response = await axios.post(`${API_URL}/api/auth/login`, {
+  const response = await authClient.post(`/api/auth/login`, {
     username,
     password,
   });
@@ -17,7 +21,7 @@ export const signupApi = async (
   phone: string,
   email: string
 ) => {
-  const response = await axios.post(`${API_URL}/api/users`, {
+  const response = await authClient.post(`/api/users`, {
     username,
     password,
     phone,

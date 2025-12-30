@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
  */
 const getJwtSecret = () => {
   const secret = process.env.JWT_SECRET_KEY;
-  console.log("JWT Secret:", secret);
   if (!secret) {
     throw new Error("JWT_SECRET_KEY is not defined");
   }

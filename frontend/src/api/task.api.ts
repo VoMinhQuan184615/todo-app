@@ -2,11 +2,41 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const apiClient = axios.create({
+  baseURL: API_URL,
+});
+
+// Add JWT token to every request
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export const fetchTasksApi = async (selectedDate) => {
-  const response = await axios.get(`${API_URL}/api/tasks`, {
+  // Format date to YYYY-MM-DD string using local timezone
+  let dateString;
+
+  if (selectedDate instanceof Date) {
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const date = String(selectedDate.getDate()).padStart(2, "0");
+    dateString = `${year}-${month}-${date}`;
+  } else {
+    dateString = selectedDate;
+  }
+
+  const response = await apiClient.get(`/api/tasks`, {
     params: {
       filter: "dates",
-      date: selectedDate,
+      date: dateString,
     },
   });
 
@@ -14,6 +44,6 @@ export const fetchTasksApi = async (selectedDate) => {
 };
 
 export const createTaskApi = async (title: string) => {
-  const response = await axios.post(`${API_URL}/api/tasks`, { title });
+  const response = await apiClient.post(`/api/tasks`, { title });
   return response.data;
 };
