@@ -1,34 +1,101 @@
 import Task from "./task.model.js";
 
-export const getAllTasks = async (filter = "today") => {
+export const getAllTasks = async (filter = "today", date) => {
   const now = new Date();
-  let startDate;
+  let startDate, endDate;
 
   switch (filter) {
+    case "dates": {
+      if (!date) throw new Error("Missing date");
+
+      const d = new Date(date);
+      console.log(d);
+      startDate = new Date(
+        d.getFullYear(),
+        d.getMonth(),
+        d.getDate(),
+        0,
+        0,
+        0,
+        0
+      );
+
+      endDate = new Date(
+        d.getFullYear(),
+        d.getMonth(),
+        d.getDate(),
+        23,
+        59,
+        59,
+        999
+      );
+      break;
+    }
+
     case "today": {
-      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      startDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        0,
+        0,
+        0,
+        0
+      );
+
+      endDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        23,
+        59,
+        59,
+        999
+      );
       break;
     }
+
     case "week": {
-      const mondayDate =
-        now.getDate() - (now.getDay() - 1) - (now.getDay() === 0 ? 7 : 0);
-      startDate = new Date(now.getFullYear(), now.getMonth(), mondayDate);
+      const day = now.getDay() || 7; // CN = 7
+
+      startDate = new Date(now);
+      startDate.setDate(now.getDate() - day + 1);
+      startDate.setHours(0, 0, 0, 0);
+
+      endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 6);
+      endDate.setHours(23, 59, 59, 999);
       break;
     }
+
     case "month": {
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+      endDate = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+        999
+      );
       break;
     }
+
     case "all":
     default: {
       startDate = null;
+      endDate = null;
     }
   }
 
-  const query = startDate ? { createdAt: { $gte: startDate } } : {};
+  const matchStage =
+    startDate && endDate
+      ? { createdAt: { $gte: startDate, $lte: endDate } }
+      : {};
 
   const result = await Task.aggregate([
-    { $match: query },
+    { $match: matchStage },
     {
       $facet: {
         tasks: [{ $sort: { createdAt: -1 } }],
@@ -41,11 +108,11 @@ export const getAllTasks = async (filter = "today") => {
     },
   ]);
 
-  const tasks = result[0].tasks;
-  const activeCount = result[0].activeCount[0]?.count || 0;
-  const completeCount = result[0].completeCount[0]?.count || 0;
-
-  return { tasks, activeCount, completeCount };
+  return {
+    tasks: result[0].tasks,
+    activeCount: result[0].activeCount[0]?.count || 0,
+    completeCount: result[0].completeCount[0]?.count || 0,
+  };
 };
 
 export const createTask = async (title) => {

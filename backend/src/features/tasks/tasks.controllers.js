@@ -2,8 +2,10 @@ import * as taskService from "./task.service.js";
 
 export const getAllTasks = async (req, res) => {
   try {
-    const { filter = "today" } = req.query;
-    const result = await taskService.getAllTasks(filter);
+    const { filter = "today", date } = req.query;
+
+    const result = await taskService.getAllTasks(filter, date);
+
     res.status(200).json(result);
   } catch (error) {
     console.error("Lỗi khi gọi getAllTasks", error);

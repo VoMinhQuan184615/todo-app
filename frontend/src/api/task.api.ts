@@ -2,8 +2,14 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const fetchTasksApi = async () => {
-  const response = await axios.get(`${API_URL}/api/tasks`);
+export const fetchTasksApi = async (selectedDate) => {
+  const response = await axios.get(`${API_URL}/api/tasks`, {
+    params: {
+      filter: "dates",
+      date: selectedDate,
+    },
+  });
+
   return response.data;
 };
 

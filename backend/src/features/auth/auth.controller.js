@@ -1,4 +1,4 @@
-import { signToken } from "../../utils/jwt.js";
+
 import { login } from "./auth.service.js";
 
 export const loginUser = async (req, res) => {

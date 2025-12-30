@@ -9,11 +9,11 @@ export const useTask = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getTasks = async () => {
+  const getTasks = async (selectedDate) => {
     try {
       setLoading(true);
       setError(null);
-      const tasks = await fetchTasksApi();
+      const tasks = await fetchTasksApi(selectedDate);
       return tasks;
     } catch (error) {
       setError("Failed to fetch tasks");

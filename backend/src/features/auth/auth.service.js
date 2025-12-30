@@ -8,7 +8,6 @@ export const login = async (username, password) => {
     throw new Error("INVALID_CREDENTIALS");
   }
   const isMatch = await bcrypt.compare(password, user.password);
-  console.log("Password Match:", isMatch);
   if (!isMatch) {
     throw new Error("INVALID_CREDENTIALS");
   }

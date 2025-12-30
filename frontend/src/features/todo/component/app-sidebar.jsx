@@ -39,17 +39,19 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }) {
+export function AppSidebar({ selectedDate, onDateChange, ...props }) {
   return (
     <Sidebar {...props}>
       <SidebarHeader className="border-sidebar-border h-16 border-b">
         <NavUser user={data.user} />
       </SidebarHeader>
+
       <SidebarContent>
-        <DatePicker />
+        <DatePicker value={selectedDate} onChange={onDateChange} />
         <SidebarSeparator className="mx-0" />
         <Calendars calendars={data.calendars} />
       </SidebarContent>
+
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -60,6 +62,7 @@ export function AppSidebar({ ...props }) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   );

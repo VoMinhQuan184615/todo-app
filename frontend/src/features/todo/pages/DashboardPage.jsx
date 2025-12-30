@@ -19,11 +19,12 @@ export default function DashboardPage() {
   const [tasks, setTasks] = useState([]);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [isCreating, setIsCreating] = useState(false);
-
+  const [selectedDate, setSelectedDate] = useState(new Date());
   useEffect(() => {
     const loadTasks = async () => {
       try {
-        const response = await getTasks();
+        const response = await getTasks(selectedDate);
+        console.log(response);
         setTasks(Array.isArray(response) ? response : response.tasks || []);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -31,7 +32,7 @@ export default function DashboardPage() {
       }
     };
     loadTasks();
-  }, []);
+  }, [selectedDate]);
 
   const handleAddTask = async () => {
     if (!newTaskTitle.trim()) return;
@@ -52,7 +53,7 @@ export default function DashboardPage() {
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar selectedDate={selectedDate} onDateChange={setSelectedDate} />
       <SidebarInset>
         <header className="bg-background sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />

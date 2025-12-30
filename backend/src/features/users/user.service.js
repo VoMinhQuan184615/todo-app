@@ -4,7 +4,7 @@ import { User } from "./users.model.js";
 export const regeisterUser = async (username, password, phone, email) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, password: hashedPassword, phone, email });
+    const user = new User({ username, password: hashedPassword, phone, email });    
     await user.save();
     return user;
   } catch (error) {
