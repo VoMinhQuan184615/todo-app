@@ -64,8 +64,13 @@ export const getMyLatestTask = async (req, res) => {
 export const createTask = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { title } = req.body;
-    const newTask = await taskService.createTask(userId, title);
+    const { title, description, priority = "medium" } = req.body;
+    const newTask = await taskService.createTask(
+      userId,
+      title,
+      description,
+      priority,
+    );
     res.status(201).json(newTask);
   } catch (error) {
     console.error("Lỗi khi gọi createTask", error);
@@ -75,10 +80,12 @@ export const createTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
   try {
-    const { title, status, completedAt } = req.body;
+    const { title, description, status, priority, completedAt } = req.body;
     const updatedTask = await taskService.updateTask(req.params.id, {
       title,
+      description,
       status,
+      priority,
       completedAt,
     });
     res.status(200).json(updatedTask);

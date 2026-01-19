@@ -17,7 +17,7 @@ apiClient.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 export const fetchTasksApi = async (selectedDate) => {
@@ -43,7 +43,11 @@ export const fetchTasksApi = async (selectedDate) => {
   return response.data;
 };
 
-export const createTaskApi = async (title: string) => {
-  const response = await apiClient.post(`/api/tasks`, { title });
+export const createTaskApi = async (taskData: {
+  title: string;
+  description?: string;
+  priority?: string;
+}) => {
+  const response = await apiClient.post(`/api/tasks`, taskData);
   return response.data;
 };

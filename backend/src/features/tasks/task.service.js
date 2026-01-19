@@ -120,21 +120,31 @@ export const getLatestTaskByUserId = async (userId) => {
   return task;
 };
 
-export const createTask = async (userId, title) => {
-  const task = new Task({ userId, title });
+export const createTask = async (
+  userId,
+  title,
+  description,
+  priority = "medium",
+) => {
+  const task = new Task({ userId, title, description, priority });
   const newTask = await task.save();
   return newTask;
 };
 
-export const updateTask = async (id, { title, status, completedAt }) => {
+export const updateTask = async (
+  id,
+  { title, description, status, priority, completedAt },
+) => {
   const updatedTask = await Task.findByIdAndUpdate(
     id,
     {
       title,
+      description,
       status,
+      priority,
       completedAt,
     },
-    { new: true }
+    { new: true },
   );
 
   if (!updatedTask) {

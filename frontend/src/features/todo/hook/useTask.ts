@@ -3,6 +3,8 @@ import { fetchTasksApi, createTaskApi } from "@/api/task.api";
 
 type taskPayload = {
   title: string;
+  description?: string;
+  priority?: string;
 };
 
 export const useTask = () => {
@@ -19,7 +21,7 @@ export const useTask = () => {
           ? new Date(
               selectedDate.getFullYear(),
               selectedDate.getMonth(),
-              selectedDate.getDate()
+              selectedDate.getDate(),
             )
           : selectedDate;
       console.log("Normalized date:", normalized);
@@ -42,8 +44,8 @@ export const useTask = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log(data.title);
-      const newTask = await createTaskApi(data.title);
+      console.log(data);
+      const newTask = await createTaskApi(data);
       return newTask;
     } catch (error) {
       setError("Failed to create task");
